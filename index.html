@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Threading Models Simulator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <i class="fas fa-microchip"></i>
+                <span>Thread<strong>Sim</strong></span>
+            </div>
+            <nav>
+                <ul>
+                    <li class="active"><a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" id="helpBtn"><i class="fas fa-question-circle"></i></a>
+                <a href="#" id="themeToggleBtn"><i class="fas fa-moon"></i></a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="content">
+            <header>
+                <div class="header-left">
+                    <h1>Threading Models Simulator</h1>
+                    <p>Visualize different threading architecture models</p>
+                </div>
+                <div class="header-right">
+                    <button id="newSimBtn" class="btn btn-primary"><i class="fas fa-plus"></i> New Simulation</button>
+                </div>
+            </header>
+
+            <!-- Configuration Panel (hidden by default) -->
+            <div class="config-panel" id="configPanel">
+                <div class="panel-header">
+                    <h2>New Simulation</h2>
+                    <button class="close-btn" id="closeConfigBtn"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label for="modelSelect">Threading Model</label>
+                        <select id="modelSelect" class="form-control">
+                            <option value="many-to-one">Many-to-One (M:1)</option>
+                            <option value="one-to-many">One-to-Many (1:N)</option>
+                            <option value="many-to-many">Many-to-Many (M:N)</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="threadCount">Thread Count</label>
+                            <input type="number" id="threadCount" class="form-control" min="1" max="20" value="5">
+                        </div>
+                        <div class="form-group half">
+                            <label for="cpuCount">CPU Count</label>
+                            <input type="number" id="cpuCount" class="form-control" min="1" max="8" value="2">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="timeQuantum">Time Quantum (ms)</label>
+                        <input type="range" id="timeQuantum" class="form-control range" min="1" max="10" value="2">
+                        <div class="range-value"><span id="timeQuantumValue">2</span> ms</div>
+                    </div>
+                    <div class="form-actions">
+                        <button id="startSimBtn" class="btn btn-success"><i class="fas fa-play"></i> Start Simulation</button>
+                    </div>
+                </div>
+            </div>
