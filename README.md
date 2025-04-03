@@ -45,7 +45,7 @@ Open index.html in any supported browser
 # download repo
 bash
 Copy
-git clone https://github.com/echoabhinav/thread-model-simulator.git
+git clone (https://github.com/echoAbhinav/OsProject.git)
 cd thread-model-simulator
 
 # Usage Instructions
