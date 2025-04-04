@@ -120,3 +120,202 @@ body {
 .sidebar-footer a:hover {
     color: var(--text-primary);
 }
+.content {
+    flex: 1;
+    margin-left: 240px;
+    padding: 0;
+}
+
+header {
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.header-left h1 {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.header-left p {
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+/* Dashboard */
+.dashboard {
+    padding: 20px 30px;
+    display: none;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.model-badge {
+    background-color: var(--accent-color);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.sim-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.card {
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.wide-card {
+    grid-column: span 3;
+}
+
+.card-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-header h3 {
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+.card-header h3 i {
+    margin-right: 8px;
+    color: var(--accent-color);
+}
+
+.card-controls {
+    display: flex;
+    align-items: center;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* Summary Cards */
+.summary-card {
+    height: 170px;
+}
+
+.big-stat {
+    font-size: 48px;
+    font-weight: 300;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.thread-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.stat-value {
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.progress-bar {
+    height: 6px;
+    background-color: var(--bg-tertiary);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.ready-progress {
+    background-color: var(--ready-color);
+}
+
+.running-progress {
+    background-color: var(--running-color);
+}
+
+.blocked-progress {
+    background-color: var(--warning-color);
+}
+
+.terminated-progress {
+    background-color: var(--danger-color);
+}
+
+/* CPU Utilization */
+.cpu-util-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100px;
+}
+
+.cpu-util-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cpu-label {
+    width: 60px;
+    font-size: 14px;
+}
+
+.cpu-util-bar {
+    flex-grow: 1;
+    height: 12px;
+    background-color: var(--bg-tertiary);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+}
+
+.cpu-util-progress {
+    height: 100%;
+    background-color: var(--accent-color);
+    transition: width 0.3s ease;
+}
+
+.cpu-util-text {
+    width: 50px;
+    font-size: 14px;
+    text-align: right;
+}
