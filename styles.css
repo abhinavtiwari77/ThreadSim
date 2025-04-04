@@ -319,3 +319,236 @@ header {
     font-size: 14px;
     text-align: right;
 }
+
+/* CPU Visualization */
+.cpu-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    min-height: 100px;
+}
+
+.cpu-item {
+    background-color: var(--bg-tertiary);
+    border-radius: 6px;
+    padding: 15px;
+    width: 200px;
+}
+
+.cpu-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.cpu-title {
+    font-weight: 500;
+}
+
+.cpu-status {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.cpu-status.idle {
+    background-color: var(--bg-tertiary);
+    color: var(--text-muted);
+}
+
+.cpu-status.active {
+    background-color: var(--running-color);
+    color: white;
+}
+
+.cpu-body {
+    height: 50px;
+    background-color: var(--bg-primary);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.cpu-thread {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--running-color);
+    color: white;
+    font-weight: 500;
+}
+
+.cpu-no-thread {
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.cpu-info {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Thread Visualization */
+.thread-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    min-height: 100px;
+}
+
+.thread-item {
+    background-color: var(--bg-tertiary);
+    border-radius: 6px;
+    padding: 10px;
+    width: 150px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.thread-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.thread-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.thread-title {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.thread-state {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.state-ready {
+    background-color: var(--ready-color);
+}
+
+.state-running {
+    background-color: var(--running-color);
+}
+
+.state-blocked {
+    background-color: var(--warning-color);
+}
+
+.state-terminated {
+    background-color: var(--danger-color);
+}
+
+.thread-progress {
+    height: 6px;
+    background-color: var(--bg-primary);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.thread-progress-bar {
+    height: 100%;
+    background-color: var(--accent-color);
+}
+
+.thread-info {
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Model Visualization */
+.model-container {
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.model-visualization {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.thread-pool, .kernel-pool, .cpu-pool {
+    position: absolute;
+    background-color: var(--bg-tertiary);
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.pool-title {
+    font-size: 14px;
+    margin-bottom: 10px;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.pool-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.pool-item {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.thread-item-visual {
+    background-color: var(--ready-color);
+    color: white;
+}
+
+.kernel-item {
+    background-color: var(--info-color);
+    color: white;
+}
+
+.cpu-item-visual {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.thread-kernel-lines, .kernel-cpu-lines {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.connection-line {
+    position: absolute;
+    height: 2px;
+    background-color: var(--text-muted);
+    transform-origin: 0 0;
+}
