@@ -47,3 +47,100 @@ function updateUI() {
     
     updateModelVisualizationUI();
 }
+function updateCpuUtilizationUI() {
+    if (!state.cpus.length) {
+        elements.cpuUtilContainer.innerHTML = '<div class="no-data-message">No active simulation</div>';
+        return;
+    }
+    
+    let html = '';
+    state.cpus.forEach(cpu => {
+        html += `
+            <div class="cpu-util-item">
+                <div class="cpu-label">CPU ${cpu.id}</div>
+                <div class="cpu-util-bar">
+                    <div class="cpu-util-progress" style="width: ${cpu.utilization}%"></div>
+                </div>
+                <div class="cpu-util-text">${cpu.utilization.toFixed(1)}%</div>
+            </div>
+        `;
+    });
+    
+    elements.cpuUtilContainer.innerHTML = html;
+}
+
+// Update CPU visualization UI
+function updateCpuVisualizationUI() {
+    if (!state.cpus.length) {
+        elements.cpuContainer.innerHTML = '<div class="no-data-message">No active simulation</div>';
+        return;
+    }
+    
+    let html = '';
+    state.cpus.forEach(cpu => {
+        const isActive = cpu.threadId !== null;
+        const threadInfo = isActive ? state.threads.find(t => t.id === cpu.threadId) : null;
+        
+        html += `
+            <div class="cpu-item">
+                <div class="cpu-header">
+                    <div class="cpu-title">CPU ${cpu.id}</div>
+                    <div class="cpu-status ${isActive ? 'active' : 'idle'}">${isActive ? 'Active' : 'Idle'}</div>
+                </div>
+                <div class="cpu-body">
+                    ${isActive ? 
+                        `<div class="cpu-thread">Thread ${cpu.threadId}</div>` : 
+                        `<div class="cpu-no-thread">No thread</div>`}
+                </div>
+                <div class="cpu-info">
+                    <div>Util: ${cpu.utilization.toFixed(1)}%</div>
+                    ${threadInfo ? `<div>Progress: ${Math.round((threadInfo.progress / threadInfo.totalWork) * 100)}%</div>` : ''}
+                </div>
+            </div>
+        `;
+    });
+    
+    elements.cpuContainer.innerHTML = html;
+}
+
+// Update thread visualization UI
+function updateThreadVisualizationUI() {
+    if (!state.threads.length) {
+        elements.threadContainer.innerHTML = '<div class="no-data-message">No active simulation</div>';
+        return;
+    }
+    
+    let html = '';
+    state.threads.forEach(thread => {
+        const progressPercent = (thread.progress / thread.totalWork) * 100;
+        const stateClass = `state-${thread.state}`;
+        const isRunning = thread.state === ThreadState.RUNNING;
+        
+        html += `
+            <div class="thread-item ${isRunning ? 'thread-running' : ''}" onclick="showThreadInfo(${thread.id})">
+                <div class="thread-header">
+                    <div class="thread-title">Thread ${thread.id}</div>
+                    <div class="thread-state ${stateClass}"></div>
+                </div>
+                <div class="thread-progress">
+                    <div class="thread-progress-bar" style="width: ${progressPercent}%"></div>
+                </div>
+                <div class="thread-info">
+                    <div>${Math.round(progressPercent)}%</div>
+                    <div>${thread.progress}/${thread.totalWork}</div>
+                </div>
+            </div>
+        `;
+    });
+    
+    elements.threadContainer.innerHTML = html;
+    
+    // Attach click handlers directly since we're using innerHTML
+    const threadItems = document.querySelectorAll('.thread-item');
+    threadItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const threadId = parseInt(this.querySelector('.thread-title').textContent.replace('Thread ', ''));
+            showThreadInfo(threadId);
+        });
+    });
+}
