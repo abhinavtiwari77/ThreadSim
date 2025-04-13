@@ -415,4 +415,148 @@ function drawOneToManyConnections() {
         });
     }
 }
+function renderManyToManyModel() {
+    // Get unique kernel thread IDs from mapping
+    const kernelThreadIds = [...new Set(Object.values(state.threadKernelMapping))];
+    
+    elements.modelContainer.innerHTML = `
+        <div class="model-visualization">
+            <div class="thread-pool" style="left: 10%; top: 10%; width: 25%;">
+                <div class="pool-title">User Threads</div>
+                <div class="pool-items">
+                    ${state.threads.map(thread => `
+                        <div class="pool-item thread-item-visual" style="background-color: var(--${thread.state}-color);">
+                            ${thread.id}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            
+            <div class="kernel-pool" style="left: 45%; top: 10%; width: 25%;">
+                <div class="pool-title">Kernel Threads</div>
+                <div class="pool-items">
+                    ${kernelThreadIds.map(id => `
+                        <div class="pool-item kernel-item">
+                            ${id}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            
+            <div class="cpu-pool" style="left: 80%; top: 10%; width: 15%;">
+                <div class="pool-title">CPUs</div>
+                <div class="pool-items">
+                    ${state.cpus.map(cpu => `
+                        <div class="pool-item cpu-item-visual">
+                            ${cpu.id}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            
+            <div class="thread-kernel-lines"></div>
+            <div class="kernel-cpu-lines"></div>
+        </div>
+    `;
+    
+    // Draw connection lines - with a delay to ensure DOM elements are rendered
+    setTimeout(() => {
+        drawManyToManyConnections();
+    }, 50);
+}
 
+// Draw connection lines for many-to-many model
+function drawManyToManyConnections() {
+    const threadItems = document.querySelectorAll('.thread-pool .pool-item');
+    const kernelItems = document.querySelectorAll('.kernel-pool .pool-item');
+    const cpuItems = document.querySelectorAll('.cpu-pool .pool-item');
+    const threadKernelLines = document.querySelector('.thread-kernel-lines');
+    const kernelCpuLines = document.querySelector('.kernel-cpu-lines');
+    
+    // Clear previous lines
+    threadKernelLines.innerHTML = '';
+    kernelCpuLines.innerHTML = '';
+    
+    // Get unique kernel thread IDs from mapping
+    const kernelThreadIds = [...new Set(Object.values(state.threadKernelMapping))];
+    
+    // Draw thread to kernel lines (many-to-many mapping)
+    if (threadItems.length && kernelItems.length) {
+        threadItems.forEach((threadItem, threadIndex) => {
+            const kernelId = state.threadKernelMapping[threadIndex];
+            const kernelIndex = kernelThreadIds.indexOf(kernelId);
+            
+            if (kernelIndex >= 0 && kernelIndex < kernelItems.length) {
+                const kernelItem = kernelItems[kernelIndex];
+                
+                const threadRect = threadItem.getBoundingClientRect();
+                const kernelRect = kernelItem.getBoundingClientRect();
+                
+                const threadCenterX = threadRect.left + threadRect.width / 2;
+                const threadCenterY = threadRect.top + threadRect.height / 2;
+                const kernelCenterX = kernelRect.left + kernelRect.width / 2;
+                const kernelCenterY = kernelRect.top + kernelRect.height / 2;
+                
+                // Calculate line properties
+                const dx = kernelCenterX - threadCenterX;
+                const dy = kernelCenterY - threadCenterY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+                
+                // Create line element
+                const line = document.createElement('div');
+                line.className = 'connection-line';
+                line.style.width = `${distance}px`;
+                line.style.left = `${threadCenterX}px`;
+                line.style.top = `${threadCenterY}px`;
+                line.style.transform = `rotate(${angle}deg)`;
+                threadKernelLines.appendChild(line);
+            }
+        });
+    }
+    
+    // Draw kernel to CPU lines
+    if (kernelItems.length && cpuItems.length) {
+        // Get active mappings - which kernel thread is running on which CPU
+        const activeMappings = {};
+        state.cpus.forEach(cpu => {
+            if (cpu.threadId !== null) {
+                const threadKernelId = state.threadKernelMapping[cpu.threadId];
+                if (threadKernelId !== undefined) {
+                    activeMappings[cpu.id] = threadKernelId;
+                }
+            }
+        });
+        
+        kernelItems.forEach((kernelItem, index) => {
+            const kernelId = kernelThreadIds[index];
+            const kernelRect = kernelItem.getBoundingClientRect();
+            const kernelCenterX = kernelRect.left + kernelRect.width / 2;
+            const kernelCenterY = kernelRect.top + kernelRect.height / 2;
+            
+            cpuItems.forEach((cpuItem, cpuIndex) => {
+                const cpuRect = cpuItem.getBoundingClientRect();
+                const cpuCenterX = cpuRect.left + cpuRect.width / 2;
+                const cpuCenterY = cpuRect.top + cpuRect.height / 2;
+                
+                // Check if this is an active connection
+                const isActive = activeMappings[cpuIndex] === kernelId;
+                
+                // Calculate line properties
+                const dx = cpuCenterX - kernelCenterX;
+                const dy = cpuCenterY - kernelCenterY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+                
+                // Create line element
+                const line = document.createElement('div');
+                line.className = `connection-line ${isActive ? 'active-connection' : 'potential-connection'}`;
+                line.style.width = `${distance}px`;
+                line.style.left = `${kernelCenterX}px`;
+                line.style.top = `${kernelCenterY}px`;
+                line.style.transform = `rotate(${angle}deg)`;
+                kernelCpuLines.appendChild(line);
+            });
+        });
+    }
+}
