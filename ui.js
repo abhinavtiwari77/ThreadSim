@@ -560,3 +560,70 @@ function drawManyToManyConnections() {
         });
     }
 }
+function showThreadInfo(threadId) {
+    const thread = state.threads.find(t => t.id === threadId);
+    if (!thread) return;
+    
+    elements.modalTitle.textContent = `Thread ${thread.id} Information`;
+    
+    let stateText = '';
+    switch (thread.state) {
+        case ThreadState.READY:
+            stateText = '<span style="color: var(--ready-color);">Ready</span>';
+            break;
+        case ThreadState.RUNNING:
+            stateText = '<span style="color: var(--running-color);">Running</span>';
+            break;
+        case ThreadState.BLOCKED:
+            stateText = '<span style="color: var(--warning-color);">Blocked</span>';
+            break;
+        case ThreadState.TERMINATED:
+            stateText = '<span style="color: var(--danger-color);">Terminated</span>';
+            break;
+    }
+    
+    const kernelThreadId = 
+        state.model === 'one-to-many' ? thread.id : 
+        state.threadKernelMapping[thread.id];
+    
+    elements.modalBody.innerHTML = `
+        <div>
+            <p><strong>State:</strong> ${stateText}</p>
+            <p><strong>Progress:</strong> ${thread.progress} / ${thread.totalWork} cycles (${Math.round((thread.progress / thread.totalWork) * 100)}%)</p>
+            <p><strong>Current CPU Time:</strong> ${thread.cpuTime} cycles</p>
+            <p><strong>Kernel Thread ID:</strong> ${kernelThreadId}</p>
+            ${thread.state === ThreadState.BLOCKED ? 
+                `<p><strong>Blocked Time:</strong> ${thread.blockedTime} / ${thread.blockDuration} cycles</p>` : 
+                ''}
+        </div>
+    `;
+    
+    showModal(elements.infoModal);
+}
+
+// Show info modal with custom content
+function showInfoModal(title, content) {
+    elements.modalTitle.textContent = title;
+    elements.modalBody.innerHTML = content;
+    showModal(elements.infoModal);
+}
+
+// Show help modal
+function showHelpModal() {
+    showModal(elements.helpModal);
+}
+
+// Show modal
+function showModal(modal) {
+    modal.classList.add('show');
+}
+
+// Hide info modal
+function hideInfoModal() {
+    elements.infoModal.classList.remove('show');
+}
+
+// Hide help modal
+function hideHelpModal() {
+    elements.helpModal.classList.remove('show');
+}
