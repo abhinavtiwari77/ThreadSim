@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Threading Models Simulator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <i class="fas fa-microchip"></i>
+                <span>Thread<strong>Sim</strong></span>
+            </div>
+            <nav>
+                <ul>
+                    <li class="active"><a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" id="helpBtn"><i class="fas fa-question-circle"></i></a>
+                <a href="#" id="themeToggleBtn"><i class="fas fa-moon"></i></a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="content">
+            <header>
+                <div class="header-left">
+                    <h1>Threading Models Simulator</h1>
+                    <p>Visualize different threading architecture models</p>
+                </div>
+                <div class="header-right">
+                    <button id="newSimBtn" class="btn btn-primary"><i class="fas fa-plus"></i> New Simulation</button>
+                </div>
+            </header>
+
+            <!-- Configuration Panel (hidden by default) -->
+            <div class="config-panel" id="configPanel">
+                <div class="panel-header">
+                    <h2>New Simulation</h2>
+                    <button class="close-btn" id="closeConfigBtn"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label for="modelSelect">Threading Model</label>
+                        <select id="modelSelect" class="form-control">
+                            <option value="many-to-one">Many-to-One (M:1)</option>
+                            <option value="one-to-many">One-to-Many (1:N)</option>
+                            <option value="many-to-many">Many-to-Many (M:N)</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="threadCount">Thread Count</label>
+                            <input type="number" id="threadCount" class="form-control" min="1" max="20" value="5">
+                        </div>
+                        <div class="form-group half">
+                            <label for="cpuCount">CPU Count</label>
+                            <input type="number" id="cpuCount" class="form-control" min="1" max="8" value="2">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="timeQuantum">Time Quantum (ms)</label>
+                        <input type="range" id="timeQuantum" class="form-control range" min="1" max="10" value="2">
+                        <div class="range-value"><span id="timeQuantumValue">2</span> ms</div>
+                    </div>
+                    <div class="form-actions">
+                        <button id="startSimBtn" class="btn btn-success"><i class="fas fa-play"></i> Start Simulation</button>
+                    </div>
+                </div>
+            </div>
+                        <!-- Dashboard Content -->
+            <div class="dashboard" id="dashboard">
+                <div class="dashboard-header">
+                    <div class="model-info">
+                        <span class="model-badge" id="modelBadge">Select Model</span>
+                    </div>
+                    <div class="sim-controls" id="simControls">
+                        <button class="btn btn-sm btn-primary" id="stepBtn" disabled><i class="fas fa-step-forward"></i> Step</button>
+                        <button class="btn btn-sm btn-primary" id="playBtn" disabled><i class="fas fa-play"></i> Play</button>
+                        <button class="btn btn-sm btn-danger" id="resetBtn" disabled><i class="fas fa-redo"></i> Reset</button>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Status Summary Cards -->
+                    <div class="card summary-card" id="clockCard">
+                        <div class="card-header">
+                            <h3><i class="fas fa-clock"></i> Clock Cycles</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="big-stat">0</div>
+                        </div>
+                    </div>
+
+                    <div class="card summary-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-pie"></i> Thread States</h3>
+                        </div>
+                        <div class="card-body thread-stats">
+                            <div class="stat-item">
+                                <div class="stat-label">Ready</div>
+                                <div class="stat-value" id="readyCount">0</div>
+                                <div class="progress-bar">
+                                    <div class="progress ready-progress" id="readyProgress" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Running</div>
+                                <div class="stat-value" id="runningCount">0</div>
+                                <div class="progress-bar">
+                                    <div class="progress running-progress" id="runningProgress" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Blocked</div>
+                                <div class="stat-value" id="blockedCount">0</div>
+                                <div class="progress-bar">
+                                    <div class="progress blocked-progress" id="blockedProgress" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Terminated</div>
+                                <div class="stat-value" id="terminatedCount">0</div>
+                                <div class="progress-bar">
+                                    <div class="progress terminated-progress" id="terminatedProgress" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card summary-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-tachometer-alt"></i> CPU Utilization</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="cpu-util-container" id="cpuUtilContainer">
+                                <div class="no-data-message">No active simulation</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CPU Visualization -->
+                    <div class="card wide-card" id="cpuCard">
+                        <div class="card-header">
+                            <h3><i class="fas fa-microchip"></i> CPU State</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="cpu-container" id="cpuContainer">
+                                <div class="no-data-message">No active simulation</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Thread Visualization -->
+                    <div class="card wide-card" id="threadCard">
+                        <div class="card-header">
+                            <h3><i class="fas fa-code-branch"></i> Threads</h3>
+                            <div class="card-controls">
+                                <div class="legend">
+                                    <span class="legend-item"><span class="legend-color ready-color"></span> Ready</span>
+                                    <span class="legend-item"><span class="legend-color running-color"></span> Running</span>
+                                    <span class="legend-item"><span class="legend-color blocked-color"></span> Blocked</span>
+                                    <span class="legend-item"><span class="legend-color terminated-color"></span> Terminated</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="thread-container" id="threadContainer">
+                                <div class="no-data-message">No active simulation</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Model-specific Visualization -->
+                    <div class="card wide-card" id="modelVisualization">
+                        <div class="card-header">
+                            <h3><i class="fas fa-project-diagram"></i> Model Visualization</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="model-container" id="modelContainer">
+                                <div class="no-data-message">No active simulation</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- No Simulation State -->
+            <div class="no-simulation" id="noSimulation">
+                <div class="empty-state">
+                    <i class="fas fa-microchip empty-icon"></i>
+                    <h2>No Active Simulation</h2>
+                    <p>Create a new simulation to get started.</p>
+                    <button class="btn btn-primary" id="emptyStateNewBtn"><i class="fas fa-plus"></i> New Simulation</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for information display -->
+    <div class="modal" id="infoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Thread Information</h2>
+                <button class="close-btn" id="closeModalBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Content will be inserted dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="modal" id="helpModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Threading Models Help</h2>
+                <button class="close-btn" id="closeHelpBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <h3>Threading Models Explained</h3>
+                <div class="help-section">
+                    <h4>Many-to-One (M:1)</h4>
+                    <p>Maps many user-level threads to a single kernel thread. Thread management is done in user space, which is efficient but can block the entire process if one thread performs a blocking system call.</p>
+                </div>
+                <div class="help-section">
+                    <h4>One-to-Many (1:N)</h4>
+                    <p>Maps each user thread to many kernel threads. This model allows multiple threads to run in parallel on multiprocessors and continue running if a thread makes a blocking system call.</p>
+                </div>
+                <div class="help-section">
+                    <h4>Many-to-Many (M:N)</h4>
+                    <p>Multiplexes many user-level threads to a smaller or equal number of kernel threads. This provides the best of both worlds: efficiency of M:1 and the parallelism of 1:N.</p>
+                </div>
+                <div class="help-section">
+                    <h4>Thread States</h4>
+                    <ul>
+                        <li><strong>Ready:</strong> Thread is waiting to be assigned to a CPU</li>
+                        <li><strong>Running:</strong> Thread is currently being executed</li>
+                        <li><strong>Blocked:</strong> Thread is waiting for an I/O operation to complete</li>
+                        <li><strong>Terminated:</strong> Thread has completed execution</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+<script src="js/state.js"></script>
+<script src="js/elements.js"></script>
+<script src="js/simulation.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/events.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
