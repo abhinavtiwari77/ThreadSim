@@ -6,7 +6,7 @@ function updateUI() {
                 modelName = 'Many-to-One (M:1)';
                 break;
             case 'one-to-many':
-                modelName = 'One-to-Many (1:N)';
+                modelName = 'One-to-One (1:1)';
                 break;
             case 'many-to-many':
                 modelName = 'Many-to-Many (M:N)';
@@ -38,15 +38,21 @@ function updateUI() {
     elements.runningProgress.style.width = `${(counts.running / total) * 100}%`;
     elements.blockedProgress.style.width = `${(counts.blocked / total) * 100}%`;
     elements.terminatedProgress.style.width = `${(counts.terminated / total) * 100}%`;
-
+    
+    // Update CPU utilization
     updateCpuUtilizationUI();
     
+    // Update CPU visualization
     updateCpuVisualizationUI();
     
+    // Update thread visualization
     updateThreadVisualizationUI();
     
+    // Update model visualization
     updateModelVisualizationUI();
 }
+
+// Update CPU utilization UI
 function updateCpuUtilizationUI() {
     if (!state.cpus.length) {
         elements.cpuUtilContainer.innerHTML = '<div class="no-data-message">No active simulation</div>';
@@ -144,6 +150,8 @@ function updateThreadVisualizationUI() {
         });
     });
 }
+
+// Update model visualization UI
 function updateModelVisualizationUI() {
     if (!state.model) {
         elements.modelContainer.innerHTML = '<div class="no-data-message">No active simulation</div>';
@@ -281,6 +289,8 @@ function drawManyToOneConnections() {
         });
     }
 }
+//..............................................
+// Render one-to-many model visualization
 function renderOneToManyModel() {
     elements.modelContainer.innerHTML = `
         <div class="model-visualization">
@@ -415,6 +425,8 @@ function drawOneToManyConnections() {
         });
     }
 }
+//........................................
+// Render many-to-many model visualization
 function renderManyToManyModel() {
     // Get unique kernel thread IDs from mapping
     const kernelThreadIds = [...new Set(Object.values(state.threadKernelMapping))];
@@ -560,6 +572,7 @@ function drawManyToManyConnections() {
         });
     }
 }
+// Show thread information modal
 function showThreadInfo(threadId) {
     const thread = state.threads.find(t => t.id === threadId);
     if (!thread) return;
