@@ -38,7 +38,7 @@
                 </div>
             </header>
 
-            <!-- Configuration Panel (hidden by default) -->
+            <!-- Configuration Panel --->
             <div class="config-panel" id="configPanel">
                 <div class="panel-header">
                     <h2>New Simulation</h2>
@@ -49,7 +49,7 @@
                         <label for="modelSelect">Threading Model</label>
                         <select id="modelSelect" class="form-control">
                             <option value="many-to-one">Many-to-One (M:1)</option>
-                            <option value="one-to-many">One-to-Many (1:N)</option>
+                            <option value="one-to-many">One-to-One (1:1)</option>
                             <option value="many-to-many">Many-to-Many (M:N)</option>
                         </select>
                     </div>
@@ -73,7 +73,8 @@
                     </div>
                 </div>
             </div>
-                        <!-- Dashboard Content -->
+
+            <!-- Dashboard Content -->
             <div class="dashboard" id="dashboard">
                 <div class="dashboard-header">
                     <div class="model-info">
@@ -229,7 +230,7 @@
                     <p>Maps many user-level threads to a single kernel thread. Thread management is done in user space, which is efficient but can block the entire process if one thread performs a blocking system call.</p>
                 </div>
                 <div class="help-section">
-                    <h4>One-to-Many (1:N)</h4>
+                    <h4>One-to-One (1:1)</h4>
                     <p>Maps each user thread to many kernel threads. This model allows multiple threads to run in parallel on multiprocessors and continue running if a thread makes a blocking system call.</p>
                 </div>
                 <div class="help-section">
@@ -248,11 +249,14 @@
             </div>
         </div>
     </div>
+
 <script src="js/state.js"></script>
 <script src="js/elements.js"></script>
 <script src="js/simulation.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/events.js"></script>
 <script src="js/main.js"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
