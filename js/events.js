@@ -107,7 +107,7 @@ function disableControls() {
     elements.resetBtn.disabled = true;
 }
 
-
+//toggle theme function
 function toggleTheme() {
     document.body.classList.toggle('light-theme');
     const icon = elements.themeToggleBtn.querySelector('i');
